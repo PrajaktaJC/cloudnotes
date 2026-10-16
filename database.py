@@ -1,10 +1,22 @@
 import os
 from sqlalchemy import create_engine, text
 
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
+
+KEY_VAULT_URL = "https://kv-cloudnotes-praju.vault.azure.net/"
+
+credential = DefaultAzureCredential()
+client = SecretClient(
+    vault_url=KEY_VAULT_URL,
+    credential=credential
+)
+
+password = client.get_secret("db-password").value
+
 server = "sql-cloudnotes-praju.database.windows.net"
 database = "cloudnotesdb"
 username = "sqladmin"
-password = os.getenv("DB_PASSWORD")
 
 connection_string = (
     f"mssql+pyodbc://{username}:{password}@{server}:1433/"
