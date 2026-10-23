@@ -32,3 +32,58 @@ def get_notes():
             text("SELECT Id, Title, Content, CreatedAt FROM Notes")
         )
         return result.fetchall()
+
+
+def add_note(title, content):
+    with engine.connect() as conn:
+        conn.execute(
+            text("""
+                INSERT INTO Notes (Title, Content)
+                VALUES (:title, :content)
+            """),
+            {"title": title, "content": content}
+        )
+        conn.commit()
+
+
+def delete_note(note_id):
+    with engine.connect() as conn:
+        conn.execute(
+            text("""
+                DELETE FROM Notes
+                WHERE Id = :id
+            """),
+            {"id": note_id}
+        )
+        conn.commit()
+
+
+def get_note(note_id):
+    with engine.connect() as conn:
+        result = conn.execute(
+            text("""
+                SELECT Id, Title, Content
+                FROM Notes
+                WHERE Id = :id
+            """),
+            {"id": note_id}
+        )
+        return result.fetchone()
+
+
+def update_note(note_id, title, content):
+    with engine.connect() as conn:
+        conn.execute(
+            text("""
+                UPDATE Notes
+                SET Title = :title,
+                    Content = :content
+                WHERE Id = :id
+            """),
+            {
+                "id": note_id,
+                "title": title,
+                "content": content
+            }
+        )
+        conn.commit()
