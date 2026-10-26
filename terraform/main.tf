@@ -44,9 +44,9 @@ resource "azurerm_key_vault" "cloudnotes" {
   soft_delete_retention_days = 7
 }
 resource "azurerm_mssql_server" "cloudnotes" {
-  name                         = "sql-cloudnotes-tf-praju"
-  resource_group_name          = azurerm_resource_group.cloudnotes.name
-  location                     = azurerm_resource_group.cloudnotes.location
+  name                = "sql-cloudnotes-tf-praju"
+  resource_group_name = azurerm_resource_group.cloudnotes.name
+  location            = azurerm_resource_group.cloudnotes.location
 
   version = "12.0"
 
