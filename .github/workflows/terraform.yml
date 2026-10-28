@@ -7,8 +7,11 @@ on:
 
 jobs:
 
-  terraform:
+    terraform:
     runs-on: ubuntu-latest
+
+    env:
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
 
     defaults:
       run:
@@ -40,10 +43,13 @@ jobs:
           TF_VAR_sql_admin_password: ${{ secrets.TF_VAR_sql_admin_password }}
         run: terraform plan -input=false
 
-  terraform-apply:
+    terraform-apply:
     needs: terraform
 
     runs-on: ubuntu-latest
+
+    env:
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
 
     environment:
       name: production
