@@ -43,3 +43,36 @@ jobs:
         env:
           TF_VAR_sql_admin_password: ${{ secrets.TF_VAR_sql_admin_password }}
         run: terraform plan -input=false
+        
+
+    terraform-apply:
+    needs: terraform
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        env:
+          TF_VAR_sql_admin_password: ${{ secrets.TF_VAR_sql_admin_password }}
+        run: terraform apply -auto-approve
