@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-    terraform:
+  terraform:
     runs-on: ubuntu-latest
 
     env:
@@ -43,7 +43,7 @@ jobs:
           TF_VAR_sql_admin_password: ${{ secrets.TF_VAR_sql_admin_password }}
         run: terraform plan -input=false
 
-    terraform-apply:
+  terraform-apply:
     needs: terraform
 
     runs-on: ubuntu-latest
