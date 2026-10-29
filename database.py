@@ -6,27 +6,26 @@ from azure.keyvault.secrets import SecretClient
 
 KEY_VAULT_URL = "https://kv-cloudnotes-praju.vault.azure.net/"
 
-credential = DefaultAzureCredential()
-client = SecretClient(
-    vault_url=KEY_VAULT_URL,
-    credential=credential
-)
+password = os.getenv("DB_PASSWORD")
 
-password = client.get_secret("db-password").value
+if not password:
+    credential = DefaultAzureCredential()
 
-server = "sql-cloudnotes-praju.database.windows.net"
-database = "cloudnotesdb"
-username = "sqladmin"
+    client = SecretClient(
+        vault_url=KEY_VAULT_URL,
+        credential=credential
+    )
 
-connection_string = (
-    f"mssql+pyodbc://{username}:{password}@{server}:1433/"
-    f"{database}?driver=ODBC+Driver+17+for+SQL+Server"
-)
+    password = client.get_secret("db-password").value
 
-engine = create_engine(connection_string)
+    print("DEBUG DB_PASSWORD =", password)
 
+engine = None
 
 def get_notes():
+    if engine is None:
+        return []
+
     with engine.connect() as conn:
         result = conn.execute(
             text("SELECT Id, Title, Content, CreatedAt FROM Notes")
