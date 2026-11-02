@@ -1,4 +1,4 @@
-name: Build and Push to ACR
+name: Build Push and Deploy to AKS
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
 
     runs-on: ubuntu-latest
 
@@ -29,8 +29,25 @@ jobs:
 
     - name: Tag Image
       run: |
-        docker tag cloudnotes:${{ github.sha }} acrcloudnotespraju.azurecr.io/cloudnotes:${{ github.sha }}
+        docker tag cloudnotes:${{ github.sha }} \
+        acrcloudnotespraju.azurecr.io/cloudnotes:${{ github.sha }}
 
     - name: Push Image
       run: |
-        docker push acrcloudnotespraju.azurecr.io/cloudnotes:${{ github.sha }}
+        docker push \
+        acrcloudnotespraju.azurecr.io/cloudnotes:${{ github.sha }}
+
+    - name: Setup Kubeconfig
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+
+    - name: Update AKS Deployment
+      run: |
+        kubectl set image deployment/cloudnotes \
+        cloudnotes=acrcloudnotespraju.azurecr.io/cloudnotes:${{ github.sha }} \
+        -n cloudnotes
+
+    - name: Verify Rollout
+      run: |
+        kubectl rollout status deployment/cloudnotes -n cloudnotes
