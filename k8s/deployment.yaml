@@ -27,17 +27,17 @@ spec:
         - containerPort: 8000
 
         env:
-      - name: DB_PASSWORD
-        valueFrom:
-        secretKeyRef:
-          name: cloudnotes-secret
-          key: DB_PASSWORD
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cloudnotes-secret
+              key: DB_PASSWORD
 
         resources:
           requests:
-              cpu: "100m"
-              memory: "128Mi"
-        
+            cpu: "100m"
+            memory: "128Mi"
+
           limits:
-              cpu: "250m"
-              memory: "256Mi"
+            cpu: "250m"
+            memory: "256Mi"

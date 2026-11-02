@@ -1,0 +1,36 @@
+name: Build and Push to ACR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: ACR Login
+      run: az acr login --name ${{ secrets.ACR_NAME }}
+
+    - name: Build Image
+      run: |
+        docker build -t cloudnotes:${{ github.sha }} .
+
+    - name: Tag Image
+      run: |
+        docker tag cloudnotes:${{ github.sha }} acrcloudnotespraju.azurecr.io/cloudnotes:${{ github.sha }}
+
+    - name: Push Image
+      run: |
+        docker push acrcloudnotespraju.azurecr.io/cloudnotes:${{ github.sha }}
