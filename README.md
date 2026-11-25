@@ -7,24 +7,64 @@ Read Notes
 Update Notes
 Delete Notes
 Secure secret management with Azure Key Vault
-Passwordless authentication using Managed Identity
+Password less authentication using Managed Identity
 Application monitoring using Application Insights
 Azure SQL Database integration
 
 Architecture:
-                       Users
-                         │
-                         ▼
-                    Azure App Service
-                         │
-                         ├── Application Insights
-                         │
-                         ├── Managed Identity
-                         │
-                         ├── Azure Key Vault
-                         │
-                         ▼
-                    Azure SQL Database
+                                              CloudNotes
+
+                            Users
+                              |
+                              v
+                    Azure Load Balancer
+                              |
+                              v
+                  Kubernetes Service (LB)
+                              |
+                              v
+                 Azure Kubernetes Service
+                              |
+                              v
+                 Kubernetes Deployment
+                              |
+                    -----------------
+                    |               |
+                    v               v
+               CloudNotes      CloudNotes
+                  Pod             Pod
+                    |               |
+                    -----------------
+                              |
+                              v
+               Azure Container Registry (ACR)
+                              ^
+                              |
+                         Docker Image
+                              ^
+                              |
+                       GitHub Actions
+                              ^
+                              |
+                           GitHub
+
+--------------------------------------------------
+
+Terraform
+    |
+    +--> Resource Group
+    +--> Azure SQL Database
+    +--> Azure App Service
+    +--> Key Vault
+    +--> Application Insights
+
+Azure App Service
+    |
+    +--> Managed Identity
+    |
+    +--> Azure Key Vault
+    |
+    +--> Azure SQL Database
 
 Technology Stack:
                   Python
