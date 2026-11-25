@@ -78,5 +78,18 @@ Challenges and Solutions
   Resolution
         Removed hardcoded credentials and implemented Azure Key Vault with Managed Identity access.    
 
+  Output:
+   ![alt text](image.png)
+
+   ScreenShot:
+   ![alt text](image-1.png)
+   ![alt text](image-2.png)
+
+   ![alt text](image-3.png)
+
+   ![alt text](image-4.png)
+
+        
+
 
    
